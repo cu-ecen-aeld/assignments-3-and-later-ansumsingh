@@ -99,6 +99,7 @@ ${CROSS_COMPILE}readelf -a bin/busybox | grep "Shared library"
 # TODO: Add library dependencies to rootfs
 echo "Adding library dependencies to rootfs"
 SYSROOT=$(${CROSS_COMPILE}gcc -print-sysroot)
+cp -L $SYSROOT/lib/ld-linux-aarch64.so.1 lib
 cp -L $SYSROOT/lib64/libm.so.6 lib64
 cp -L $SYSROOT/lib64/libresolv.so.2 lib64
 cp -L $SYSROOT/lib64/libc.so.6 lib64
@@ -124,6 +125,8 @@ make
 echo "Copy finder.sh and writer.sh into home directory"
 cp finder.sh $OUTDIR/rootfs/home/
 cp writer $OUTDIR/rootfs/home/
+cp autorun-qemu.sh $OUTDIR/rootfs/home/
+cp finder-test.sh $OUTDIR/rootfs/home/
 
 # TODO: Chown the root directory
 echo "chown root directory"
