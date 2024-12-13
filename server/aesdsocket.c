@@ -8,7 +8,7 @@
 #include <syslog.h>
 
 #define PORT 9000
-#define BUFFER_SIZE 20000
+#define BUFFER_SIZE 50000
 #define FILENAME "/var/tmp/aesdsocketdata.txt"
 
 int server_fd;
