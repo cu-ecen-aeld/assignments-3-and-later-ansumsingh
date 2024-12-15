@@ -41,18 +41,29 @@ void setup_signal_handling() {
 
 void handle_client(int client_fd) {
     char buffer[BUFFER_SIZE];
+    char loop_continue = 1;
     //int file_fd;
     // Receive message from client
-    ssize_t received_bytes = recv(client_fd, buffer, BUFFER_SIZE - 1, 0);
-    if (received_bytes <= 0) {
-        syslog(LOG_ERR, "Error receiving data from client");
-        perror("Error receiving data from client");
-        close(client_fd);
-        return;
+    ssize_t total_received = 0;
+    ssize_t received_bytes = 0;
+    while (loop_continue)
+    {
+        received_bytes = recv(client_fd, buffer+total_received, BUFFER_SIZE - 1, 0);
+        if (received_bytes <= 0) {
+          syslog(LOG_ERR, "Error receiving data from client");
+          perror("Error receiving data from client");
+          close(client_fd);
+          return;
+        }
+        total_received += received_bytes;
+        if (buffer[total_received - 1] == '\n') {
+            loop_continue = 0;
+        }
+         
+
     }
 
-    buffer[received_bytes] = '\n'; // Null-terminate the buffer
-    syslog(LOG_INFO, "Received message from client: ");
+    syslog(LOG_INFO, "Received %d bytes from client with buffer size %d: ", total_received, BUFFER_SIZE);
 
     // Save message to file
     // Append message to /var/tmp/aesdsocketdata whenever there is \n
